@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Nock</string>
+    <string name="title_activity_settings_class">SettingsClass</string>
+</resources>

@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "709664292761",
+    "firebase_url": "https://vikko-ff382.firebaseio.com",
+    "project_id": "vikko-ff382",
+    "storage_bucket": "vikko-ff382.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709664292761:android:564fe5e2f50a837b",
+        "android_client_info": {
+          "package_name": "zip5001.my.com.zip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709664292761-ngbiv92k5a09h89t8mmreao30qaqeb51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEtAAdGX2OlD-BKSs-knuCVm-hn5ZLBVI"
+        },
+        {
+          "current_key": "AIzaSyCAtmRE7eAlpW9xYpSxjpmt9HhN-HzgiQ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709664292761:android:1a3f0d96d0cfdfc6",
+        "android_client_info": {
+          "package_name": "zip5001.my.com.zip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709664292761-ngbiv92k5a09h89t8mmreao30qaqeb51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEtAAdGX2OlD-BKSs-knuCVm-hn5ZLBVI"
+        },
+        {
+          "current_key": "AIzaSyCAtmRE7eAlpW9xYpSxjpmt9HhN-HzgiQ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
