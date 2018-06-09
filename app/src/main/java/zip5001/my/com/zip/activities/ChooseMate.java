@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,14 +20,17 @@ import zip5001.my.com.zip.MessageRecieveClass;
 import zip5001.my.com.zip.R;
 import zip5001.my.com.zip.DatabaseOperations;
 
-public class ChooseMate extends AppCompatActivity{
+public class ChooseMate extends AppCompatActivity {
 
-    static boolean justOnce=true;
+    static boolean justOnce = true;
     private MenuItem itemDelete;
     private MenuItem itemCancel;
+    static Menu menu;
 
-    public void goVisible(){
+    public void goVisible() {
+        itemDelete = menu.findItem(R.id.delete);
         itemDelete.setVisible(true);
+        itemCancel = menu.findItem(R.id.cancel);
         itemCancel.setVisible(true);
     }
 
@@ -34,13 +39,16 @@ public class ChooseMate extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_mate);
 
+//      setTitle------>
+        setTitle("Welcome " + LoginActivity.UserName.toUpperCase());
+
 //      Setting text of pagerTitle strip----->
         PagerTitleStrip pagerTitleStrip = findViewById(R.id.tabtitle);
         pagerTitleStrip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
         pagerTitleStrip.setTextColor(Color.WHITE);
 
 //      Setting Pagertab strip------------->
-        PagerTabStrip tab = (PagerTabStrip)pagerTitleStrip;
+        PagerTabStrip tab = (PagerTabStrip) pagerTitleStrip;
         tab.setTabIndicatorColor(Color.WHITE);
 
 
@@ -50,22 +58,21 @@ public class ChooseMate extends AppCompatActivity{
         pager.setAdapter(new ViewPagerManager(getSupportFragmentManager()));
 
 //      Start the service for receiving message when app is not open---------->
-        if(justOnce) {
-            justOnce=false;
-            Intent in = new Intent(this, MessageRecieveClass.class);
-            startService(in);
-        }
+        MessageRecieveClass.value=true;
+        Intent in = new Intent(this, MessageRecieveClass.class);
+        startService(in);
     }
 
-//  Create option menu and setOnclickListener----------------------------->
+    //  Create option menu and setOnclickListener----------------------------->
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings, menu);
+        ChooseMate.menu = menu;
+
         itemDelete = menu.findItem(R.id.delete);
         itemDelete.setVisible(false);
-        itemCancel = menu.findItem(R.id.delete);
+        itemCancel = menu.findItem(R.id.cancel);
         itemCancel.setVisible(false);
-
-        getMenuInflater().inflate(R.menu.settings, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -78,8 +85,8 @@ public class ChooseMate extends AppCompatActivity{
                 break;
             case R.id.logout:
                 DatabaseOperations.logOut();
-                LoginActivity.auth=null;
-                Intent i = new Intent(this,LoginActivity.class);
+                LoginActivity.auth = null;
+                Intent i = new Intent(this, LoginActivity.class);
                 startActivity(i);
                 break;
             case R.id.delete:
@@ -90,21 +97,21 @@ public class ChooseMate extends AppCompatActivity{
         return true;
     }
 
-//  Make user go online---------------->
+    //  Make user go online---------------->
     @Override
     protected void onResume() {
         super.onResume();
         DatabaseOperations.goOnline();
     }
 
-//  Finish the activity as activity starts again upon the previous ChooseMate activity------------------>
+    //  Finish the activity as activity starts again upon the previous ChooseMate activity------------------>
     @Override
     protected void onPause() {
         super.onPause();
         this.finish();
     }
 
-//  Make user go offline and logout------------------->
+    //  Make user go offline and logout------------------->
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
@@ -122,7 +129,7 @@ public class ChooseMate extends AppCompatActivity{
         TabsArrayClass.RoomUsers.clear();
     }
 
-//  Again offline and logout------------------------------>
+    //  Again offline and logout------------------------------>
     @Override
     public void onBackPressed() {
         super.onBackPressed();

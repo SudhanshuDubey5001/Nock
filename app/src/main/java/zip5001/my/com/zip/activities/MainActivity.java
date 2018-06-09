@@ -22,6 +22,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import zip5001.my.com.zip.AlertBox;
@@ -32,17 +33,20 @@ import zip5001.my.com.zip.MessageRecieveClass;
 import zip5001.my.com.zip.R;
 import zip5001.my.com.zip.SharedPrefs;
 import zip5001.my.com.zip.DatabaseOperations;
+import zip5001.my.com.zip.ChatScreenView.loadMoreMessages;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements loadMoreMessages {
 
     public static final String GETFRIEND = "friend";
     public static final String GETID = "id";
-    public static final String REC = "receive_message";
 
+    boolean firstTime=true;
     public static boolean NOTI_Enable = false;
 
+    ArrayList<String> MassStorageMsg = new ArrayList<>();
+    ArrayList<String> MassStorageKey = new ArrayList<>();
     EditText msgField;
-    AdapterClass adapterClass = new AdapterClass();
+    AdapterClass adapterClass = new AdapterClass(this);
     public static String friendUserName;
 
     DatabaseReference ref;
@@ -53,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     public static MediaPlayer mpRecieve;
     MediaPlayer mpSend;
     String status;
-    boolean UserOpinion = false;
     boolean presentInRoomStatus;
+    int noOfMessages;
     DatabaseReference refRoom;
     ChildEventListener childEventListener;
 
@@ -63,21 +67,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d("my", "MainActivity started!!");
+
         //notification---->
-        NOTI_Enable = false;
-        SharedPrefs.setNoti(NOTI_Enable);
+        MessageRecieveClass.value = false;
+        Intent in = new Intent(this, MessageRecieveClass.class);
+        stopService(in);
+        SharedPrefs.setNoti(false);
 
         //message sounds------->
         mpSend = MediaPlayer.create(this, R.raw.send);
         mpRecieve = MediaPlayer.create(this, R.raw.recieve);
 
 //       friend name------------>
-        int id=getIntent().getIntExtra(GETID,0);
-        if(id== ViewPagerCreation.USERS) {
+        int id = getIntent().getIntExtra(GETID, 0);
+        if (id == ViewPagerCreation.USERS) {
             friendUserName = TabsArrayClass.Users.get(getIntent().getIntExtra(GETFRIEND, 0));
-        }else if(id==ViewPagerCreation.MESSAGES){
+        } else if (id == ViewPagerCreation.MESSAGES) {
             friendUserName = TabsArrayClass.MessagesUsers.get(getIntent().getIntExtra(GETFRIEND, 0));
-        }else {
+        } else {
             friendUserName = TabsArrayClass.RoomUsers.get(getIntent().getIntExtra(GETFRIEND, 0));
         }
         Log.d("my", "friendKey=" + friendUserName);
@@ -154,28 +162,55 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        read the messages old and current-------------->
+//      read the messages old and current-------------->
+        DatabaseReference countRef = FirebaseDatabase.getInstance().getReference("Chat");
+        countRef.child(children1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                noOfMessages = (int) dataSnapshot.getChildrenCount();
+                Log.d("my", "no of messages: " + noOfMessages);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getValue().toString().contains("new:")){
-                    int index = dataSnapshot.getValue().toString().indexOf("new:");
-                    String oldMsg= dataSnapshot.getValue().toString().substring(index+4);
-                    ref.child(children1).child(dataSnapshot.getKey()).setValue(oldMsg);
-                }
+//              read all messages to mass storage first----->
+                String msg = dataSnapshot.getValue().toString();
+                String key = dataSnapshot.getKey();
+                MassStorageMsg.add(msg);
+                MassStorageKey.add(key);
 
+//              after reading, load last 60 messages first time----------------->
+                if(MainActivity.this.firstTime) {
+                    firstTime=false;
+                    if (MassStorageKey.size() == noOfMessages) {
+                        loadMessages();
+                    }
+                    //for new messages---->
+                }else if (dataSnapshot.getValue().toString().contains("new:")) {
+//                  mark read----------------------->
+                    String oldMsg=markRead(-2,dataSnapshot.getValue().toString());
+                    adapterClass.passMsgUSER(dataSnapshot.getKey(),oldMsg);
+                    ref.child(children1).child(dataSnapshot.getKey()).setValue(oldMsg);
+                }else{      //for current messages friend is sending
+                    adapterClass.passMsgUSER(dataSnapshot.getKey(),dataSnapshot.getValue().toString());
+                }
                 adapterClass.notifyDataSetChanged();
 
-//                  For scrolling---------------------->
+
+//              For scrolling---------------------->
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
                         recyclerView.smoothScrollToPosition(adapterClass.msg.size() + 1);
                     }
                 });
-
-                adapterClass.passMsgUSER(dataSnapshot.getKey(), dataSnapshot.getValue().toString());
-                Log.d("my", dataSnapshot.getValue().toString());
             }
 
             @Override
@@ -223,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                             LoginActivity.UserName +
                             "Time" +
                             df.format(calendar.getTime()))
-                            .setValue("new:"+msgText);
+                            .setValue("new:" + msgText);
 
                     msgField.setText(null);
                     mpSend.start();
@@ -233,13 +268,68 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//  Prepare option menu in chat screen---------------------->
+    private void loadMessages() {
+        //first time---->
+        if (MassStorageMsg.size() > 60) {
+            int min = MassStorageMsg.size() - 60;
+            for (int i = min; i < MassStorageMsg.size(); i++) {
+                markRead(min,null);
+                adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
+                Log.d("my", MassStorageMsg.get(i));
+                adapterClass.notifyDataSetChanged();
+            }
+        } else {
+            for (int i = 0; i < MassStorageMsg.size(); i++) {
+                markRead(0,null);
+                adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
+                Log.d("my", MassStorageMsg.get(i));
+                adapterClass.notifyDataSetChanged();
+            }
+        }
+    }
 
+    String markRead(int min,String newMsg) {
+        if(min>-1) {
+            for (int i = min; i < MassStorageMsg.size(); i++) {
+                if (MassStorageMsg.get(i).contains("new:")) {
+                    MassStorageMsg.set(i, MassStorageMsg.get(i).substring(4));
+                }
+            }
+        }else {
+            int index = newMsg.indexOf("new:");
+            return newMsg.substring(index + 4);
+        }
+        return null;
+    }
+
+    @Override
+    public void loadMore(int noOfTimes) {
+        ArrayList<String> msg = new ArrayList<>();
+        ArrayList<String> key = new ArrayList<>();
+        int min = MassStorageMsg.size() - (60 * noOfTimes);
+        int max = MassStorageMsg.size() - (60 * (noOfTimes - 1));
+        if (min <= 0) {
+            for (int i = 0; i < max; i++) {
+                msg.add(MassStorageMsg.get(i));
+                key.add(MassStorageKey.get(i));
+            }
+        } else {
+            for (int i = min; i < max; i++) {
+                msg.add(MassStorageMsg.get(i));
+                key.add(MassStorageKey.get(i));
+            }
+        }
+        adapterClass.adjustMsgArray(key, msg);
+//        adapterClass.notifyDataSetChanged();
+    }
+
+    //  Prepare option menu in chat screen---------------------->
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.roombutton, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -257,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
         adapterClass.msg.clear();
         adapterClass.key.clear();
         ref.child(children1).removeEventListener(childEventListener);
-        friendUserName=null;
+        friendUserName = null;
         Intent in = new Intent(this, ChooseMate.class);
         startActivity(in);
     }
@@ -275,6 +365,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
+        Intent in = new Intent(this, MessageRecieveClass.class);
+        startService(in);
         DatabaseOperations.goOffline();
     }
 
@@ -282,13 +374,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        Intent in = new Intent(this, MessageRecieveClass.class);
+        startService(in);
         SharedPrefs.setNoti(true);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Intent in = new Intent(this, MessageRecieveClass.class);
+        startService(in);
         SharedPrefs.setNoti(true);
     }
-
 }

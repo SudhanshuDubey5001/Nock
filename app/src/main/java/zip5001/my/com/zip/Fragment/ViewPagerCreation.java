@@ -41,15 +41,28 @@ public class ViewPagerCreation extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        swipe = this.getActivity().findViewById(R.id.swiperefresh);
-        tab.initializeHUD(this.getActivity());
-
         Bundle b = getArguments();
         if (b != null) {
             id = b.getInt(PROFILE_ID);
         } else {
             throw new RuntimeException("(Pass the id man");
         }
+
+//        swipe = this.getActivity().findViewById(R.id.swiperefresh);
+//        tab.initializeHUD(this.getActivity());
+
+//        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                if(id==USERS){
+//                    tab.refreshUsersArray(adapter,id);
+//                }else if(id==MESSAGES){
+//                    tab.refreshMessageArray(adapter,id);
+//                }else {
+//                    tab.refreshRoomArray(adapter,id);
+//                }
+//            }
+//        });
     }
 
     @Nullable
@@ -68,19 +81,13 @@ public class ViewPagerCreation extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         switch (id) {
             case USERS:
-                tab.refreshUsersArray(adapter,id);
-//                swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//                    @Override
-//                    public void onRefresh() {
-//                        refreshUsersArray();
-//                    }
-//                });
+                tab.refreshUsersArray(adapter, id);
                 break;
             case MESSAGES:
-                tab.refreshMessageArray(adapter,id);
+                tab.refreshMessageArray(adapter, id);
                 break;
             case ROOM:
-                tab.refreshRoomArray(adapter,id);
+                tab.refreshRoomArray(adapter, id);
                 break;
         }
     }

@@ -21,9 +21,9 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
     TextView userIDs;
     int position;
     int id;
-    Context context;
-    Intent in;
-    boolean LongClickheld = false;
+    private Context context;
+    private Intent in;
+    private boolean LongClickheld = false;
 
     ChoosingViewholder(View itemView, Context context) {
         super(itemView);
@@ -40,8 +40,8 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
                     in.putExtra(MainActivity.GETID, ChoosingViewholder.this.id);
                     ChoosingViewholder.this.context.startActivity(in);
                 } else {
-                    view.setBackgroundColor(Color.GRAY);
                     if (id == ViewPagerCreation.ROOM) {
+                        view.setBackgroundColor(Color.GRAY);
                         DatabaseOperations.deleteRoomUsers.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
                     } else {
                         DatabaseOperations.deleteChat.add(TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
@@ -59,8 +59,8 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
                     mate.goVisible();
                     DatabaseOperations.deleteRoomUsers.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
                     v.setBackgroundColor(Color.GRAY);
-                }else{
-                    LongClickheld=true;
+                } else if(id==ViewPagerCreation.MESSAGES){
+                    LongClickheld = true;
                     DatabaseOperations.deleteChat.clear();
                     ChooseMate mate = new ChooseMate();
                     mate.goVisible();

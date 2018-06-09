@@ -12,12 +12,12 @@
         android:id="@+id/delete"
         android:title="delete"
         android:icon="@drawable/delete"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/cancel"
         android:title="Cancel"
         android:icon="@drawable/cancel"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
 </menu>
