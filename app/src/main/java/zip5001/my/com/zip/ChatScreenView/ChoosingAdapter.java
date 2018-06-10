@@ -16,11 +16,17 @@ import zip5001.my.com.zip.activities.ChooseMate;
 public class ChoosingAdapter extends RecyclerView.Adapter<ChoosingViewholder>{
 
     public ArrayList<String> listNames = new ArrayList<>();
-    int id;
+    private int id;
+    public static ChoosingAdapter context;
+
+    public static int knowId(){
+        return ChoosingAdapter.context.id;
+    }
 
     public void setArray(ArrayList<String> arr,int id){
         listNames = arr;
         this.id=id;
+        ChoosingAdapter.context=this;
     }
 
     @Override

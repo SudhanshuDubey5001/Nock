@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +12,9 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import zip5001.my.com.zip.ChatScreenView.ChoosingAdapter;
 import zip5001.my.com.zip.Fragment.TabsArrayClass;
+import zip5001.my.com.zip.Fragment.ViewPagerCreation;
 import zip5001.my.com.zip.Fragment.ViewPagerManager;
 import zip5001.my.com.zip.Fragment.ZoomOutPageTransformer;
 import zip5001.my.com.zip.MessageRecieveClass;
@@ -58,7 +59,7 @@ public class ChooseMate extends AppCompatActivity {
         pager.setAdapter(new ViewPagerManager(getSupportFragmentManager()));
 
 //      Start the service for receiving message when app is not open---------->
-        MessageRecieveClass.value=true;
+        MessageRecieveClass.value = true;
         Intent in = new Intent(this, MessageRecieveClass.class);
         startService(in);
     }
@@ -90,9 +91,21 @@ public class ChooseMate extends AppCompatActivity {
                 startActivity(i);
                 break;
             case R.id.delete:
-                DatabaseOperations.removeFriend(this);
+                DatabaseOperations dop=new DatabaseOperations();
+                Log.d("my","Dab gaya delete..sach mein!!!!!");
+                Log.d("my","ID: "+ChoosingAdapter.knowId());
+                if (ChoosingAdapter.knowId() == ViewPagerCreation.USERS) {
+                    dop.remove(DatabaseOperations.deleteUsers, ChoosingAdapter.knowId());
+                } else if (ChoosingAdapter.knowId() == ViewPagerCreation.MESSAGES) {
+                    dop.remove(DatabaseOperations.deleteNew, ChoosingAdapter.knowId());
+                } else {
+                    dop.remove(DatabaseOperations.deleteRoom, ChoosingAdapter.knowId());
+                }
+                DatabaseOperations.deleteUsers.clear();
+                DatabaseOperations.deleteNew.clear();
+                DatabaseOperations.deleteRoom.clear();
+                break;
             case R.id.cancel:
-
         }
         return true;
     }

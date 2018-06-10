@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
 
 //       friend name------------>
         int id = getIntent().getIntExtra(GETID, 0);
+        Log.d("my","Mainactivity id: "+id);
         if (id == ViewPagerCreation.USERS) {
             friendUserName = TabsArrayClass.Users.get(getIntent().getIntExtra(GETFRIEND, 0));
         } else if (id == ViewPagerCreation.MESSAGES) {
@@ -134,35 +135,36 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
         ref.push().child(children1);
         ref.push().child(children2);
 
-//      Adding Room-status of friend if not present-------->
-        refRoom = FirebaseDatabase.getInstance().getReference("Room_Status");
-        refRoom.push().child(LoginActivity.UserName);
-        Query q = refRoom.child(LoginActivity.UserName).orderByKey();
-        q.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.getKey().equals(friendUserName)) {
-                        presentInRoomStatus = true;
-                        Log.d("my", "mila mila..such mein!!");
-                        break;
-                    } else {
-                        Log.d("my", "nahi mila");
-                        presentInRoomStatus = false;
-                    }
-                }
-                if (!presentInRoomStatus) {
-                    refRoom.child(LoginActivity.UserName).child(friendUserName).setValue("NO");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                AlertBox.builder(MainActivity.this, "Error", databaseError.getMessage(), "OK");
-            }
-        });
+////      Adding Room-status of friend if not present-------->
+//        refRoom = FirebaseDatabase.getInstance().getReference("Room_Status");
+//        refRoom.push().child(LoginActivity.UserName);
+//        Query q = refRoom.child(LoginActivity.UserName).orderByKey();
+//        q.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    if (snapshot.getKey().equals(friendUserName)) {
+//                        presentInRoomStatus = true;
+//                        Log.d("my", "mila mila..such mein!!");
+//                        break;
+//                    } else {
+//                        Log.d("my", "nahi mila");
+//                        presentInRoomStatus = false;
+//                    }
+//                }
+//                if (!presentInRoomStatus) {
+//                    refRoom.child(LoginActivity.UserName).child(friendUserName).setValue("NO");
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                AlertBox.builder(MainActivity.this, "Error", databaseError.getMessage(), "OK");
+//            }
+//        });
 
 //      read the messages old and current-------------->
+
         DatabaseReference countRef = FirebaseDatabase.getInstance().getReference("Chat");
         countRef.child(children1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -335,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.AddOrRemove:
-                DatabaseOperations.addFriend(friendUserName, this);
+                DatabaseOperations.addFriend(this);
         }
         return super.onOptionsItemSelected(item);
     }

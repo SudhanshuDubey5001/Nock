@@ -7,13 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import zip5001.my.com.zip.DatabaseOperations;
 import zip5001.my.com.zip.Fragment.TabsArrayClass;
 import zip5001.my.com.zip.Fragment.ViewPagerCreation;
 import zip5001.my.com.zip.R;
 import zip5001.my.com.zip.activities.ChooseMate;
+import zip5001.my.com.zip.activities.LoginActivity;
 import zip5001.my.com.zip.activities.MainActivity;
 
 public class ChoosingViewholder extends RecyclerView.ViewHolder {
@@ -40,11 +39,13 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
                     in.putExtra(MainActivity.GETID, ChoosingViewholder.this.id);
                     ChoosingViewholder.this.context.startActivity(in);
                 } else {
+                    view.setBackgroundColor(Color.GRAY);
                     if (id == ViewPagerCreation.ROOM) {
-                        view.setBackgroundColor(Color.GRAY);
-                        DatabaseOperations.deleteRoomUsers.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
+                        DatabaseOperations.deleteRoom.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
+                    } else if (id == ViewPagerCreation.MESSAGES) {
+                        DatabaseOperations.deleteNew.add(TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
                     } else {
-                        DatabaseOperations.deleteChat.add(TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
+                        DatabaseOperations.deleteUsers.add(TabsArrayClass.Users.get(ChoosingViewholder.this.position));
                     }
                 }
             }
@@ -53,19 +54,20 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                ChooseMate mate = new ChooseMate();
+                mate.goVisible();
+                v.setBackgroundColor(Color.GRAY);
+                LongClickheld = true;
+
                 if (id == ViewPagerCreation.ROOM) {
-                    LongClickheld = true;
-                    ChooseMate mate = new ChooseMate();
-                    mate.goVisible();
-                    DatabaseOperations.deleteRoomUsers.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
-                    v.setBackgroundColor(Color.GRAY);
-                } else if(id==ViewPagerCreation.MESSAGES){
-                    LongClickheld = true;
-                    DatabaseOperations.deleteChat.clear();
-                    ChooseMate mate = new ChooseMate();
-                    mate.goVisible();
-                    DatabaseOperations.deleteChat.add(TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
-                    v.setBackgroundColor(Color.GRAY);
+                    DatabaseOperations.deleteRoom.clear();
+                    DatabaseOperations.deleteRoom.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
+                } else if (id == ViewPagerCreation.MESSAGES) {
+                    DatabaseOperations.deleteNew.clear();
+                    DatabaseOperations.deleteNew.add(LoginActivity.UserName + " and " + TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
+                } else {
+                    DatabaseOperations.deleteUsers.clear();
+                    DatabaseOperations.deleteNew.add(LoginActivity.UserName + " and " + TabsArrayClass.Users.get(ChoosingViewholder.this.position));
                 }
                 return true;
             }

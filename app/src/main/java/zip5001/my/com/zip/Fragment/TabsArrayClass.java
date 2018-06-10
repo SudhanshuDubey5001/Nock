@@ -30,13 +30,13 @@ public class TabsArrayClass{
     private volatile String friends;
     private int id;
 
-    public void initializeHUD(Context con) {
-        hud = KProgressHUD.create(con)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setAnimationSpeed(3)
-                .setLabel("Wait")
-                .setCancellable(true);
-    }
+//    public void initializeHUD(Context con) {
+//        hud = KProgressHUD.create(con)
+//                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+//                .setAnimationSpeed(3)
+//                .setLabel("Wait")
+//                .setCancellable(true);
+//    }
 
     public void refreshUsersArray(ChoosingAdapter adapter, int id) {
         this.adapter = adapter;
@@ -208,8 +208,12 @@ public class TabsArrayClass{
                 TabsArrayClass.RoomUsers.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    TabsArrayClass.RoomUsers.add(snapshot.getValue().toString());
-                    TabsArrayClass.this.adapter.notifyDataSetChanged();
+                    if(dataSnapshot.getChildrenCount()==0){
+                        TabsArrayClass.this.adapter.notifyDataSetChanged();
+                    }else {
+                        TabsArrayClass.RoomUsers.add(snapshot.getValue().toString());
+                        TabsArrayClass.this.adapter.notifyDataSetChanged();
+                    }
                 }
             }
 
