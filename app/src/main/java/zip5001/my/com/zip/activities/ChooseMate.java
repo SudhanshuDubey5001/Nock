@@ -11,8 +11,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import zip5001.my.com.zip.ChatScreenView.ChoosingAdapter;
+import zip5001.my.com.zip.ChatScreenView.ChoosingViewholder;
 import zip5001.my.com.zip.Fragment.TabsArrayClass;
 import zip5001.my.com.zip.Fragment.ViewPagerCreation;
 import zip5001.my.com.zip.Fragment.ViewPagerManager;
@@ -27,6 +29,7 @@ public class ChooseMate extends AppCompatActivity {
     private MenuItem itemDelete;
     private MenuItem itemCancel;
     static Menu menu;
+    private boolean firstTime = true;
 
     public void goVisible() {
         itemDelete = menu.findItem(R.id.delete);
@@ -91,9 +94,9 @@ public class ChooseMate extends AppCompatActivity {
                 startActivity(i);
                 break;
             case R.id.delete:
-                DatabaseOperations dop=new DatabaseOperations();
-                Log.d("my","Dab gaya delete..sach mein!!!!!");
-                Log.d("my","ID: "+ChoosingAdapter.knowId());
+                DatabaseOperations dop = new DatabaseOperations();
+                Log.d("my", "Dab gaya delete..sach mein!!!!!");
+                Log.d("my", "ID: " + ChoosingAdapter.knowId());
                 if (ChoosingAdapter.knowId() == ViewPagerCreation.USERS) {
                     dop.remove(DatabaseOperations.deleteUsers, ChoosingAdapter.knowId());
                 } else if (ChoosingAdapter.knowId() == ViewPagerCreation.MESSAGES) {
@@ -106,7 +109,9 @@ public class ChooseMate extends AppCompatActivity {
                 DatabaseOperations.deleteRoom.clear();
                 break;
             case R.id.cancel:
-        }
+                ChoosingAdapter adapter=new ChoosingAdapter();
+                adapter.cancel(null);
+            }
         return true;
     }
 

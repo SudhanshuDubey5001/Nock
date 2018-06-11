@@ -1,6 +1,7 @@
 package zip5001.my.com.zip.ChatScreenView;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import zip5001.my.com.zip.DatabaseOperations;
 import zip5001.my.com.zip.R;
 import zip5001.my.com.zip.activities.ChooseMate;
 
@@ -46,5 +48,25 @@ public class ChoosingAdapter extends RecyclerView.Adapter<ChoosingViewholder>{
     @Override
     public int getItemCount() {
         return listNames.size();
+    }
+
+    public void cancel(View view){
+        if(view==null){
+            ChoosingViewholder.LongClickheld=false;
+            for(View v:ChoosingViewholder.viewArray){
+                v.setBackgroundColor(Color.WHITE);
+            }
+
+            DatabaseOperations.deleteUsers.clear();
+            DatabaseOperations.deleteNew.clear();
+            DatabaseOperations.deleteRoom.clear();
+        }else {
+            for(View v:ChoosingViewholder.viewArray){
+                if(v==view) {
+                    Log.d("my","Arey ab to yahan par bhi aa gaye!!");
+                    v.setBackgroundColor(Color.WHITE);
+                }
+            }
+        }
     }
 }

@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
     public static final String GETFRIEND = "friend";
     public static final String GETID = "id";
 
-    boolean firstTime=true;
+    boolean firstTime = true;
     public static boolean NOTI_Enable = false;
 
     ArrayList<String> MassStorageMsg = new ArrayList<>();
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
 
 //       friend name------------>
         int id = getIntent().getIntExtra(GETID, 0);
-        Log.d("my","Mainactivity id: "+id);
+        Log.d("my", "Mainactivity id: " + id);
         if (id == ViewPagerCreation.USERS) {
             friendUserName = TabsArrayClass.Users.get(getIntent().getIntExtra(GETFRIEND, 0));
         } else if (id == ViewPagerCreation.MESSAGES) {
@@ -189,19 +189,22 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
                 MassStorageKey.add(key);
 
 //              after reading, load last 60 messages first time----------------->
-                if(MainActivity.this.firstTime) {
-                    firstTime=false;
+                if (MainActivity.this.firstTime) {
+                    Log.d("my","if no : 1");
+                    firstTime = false;
                     if (MassStorageKey.size() == noOfMessages) {
                         loadMessages();
                     }
                     //for new messages---->
-                }else if (dataSnapshot.getValue().toString().contains("new:")) {
+                } else if (dataSnapshot.getValue().toString().contains("new:")) {
 //                  mark read----------------------->
-                    String oldMsg=markRead(-2,dataSnapshot.getValue().toString());
-                    adapterClass.passMsgUSER(dataSnapshot.getKey(),oldMsg);
+                    Log.d("my","if no : 2");
+                    String oldMsg = markRead(-2, dataSnapshot.getValue().toString());
+                    adapterClass.passMsgUSER(dataSnapshot.getKey(), oldMsg);
                     ref.child(children1).child(dataSnapshot.getKey()).setValue(oldMsg);
-                }else{      //for current messages friend is sending
-                    adapterClass.passMsgUSER(dataSnapshot.getKey(),dataSnapshot.getValue().toString());
+                } else {      //for current messages friend is sending
+                    Log.d("my","if no : 3");
+                    adapterClass.passMsgUSER(dataSnapshot.getKey(), dataSnapshot.getValue().toString());
                 }
                 adapterClass.notifyDataSetChanged();
 
@@ -275,29 +278,30 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
         if (MassStorageMsg.size() > 60) {
             int min = MassStorageMsg.size() - 60;
             for (int i = min; i < MassStorageMsg.size(); i++) {
-                markRead(min,null);
+                markRead(min, null);
                 adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
-                Log.d("my", MassStorageMsg.get(i));
+                Log.d("my", "here..."+MassStorageMsg.get(i));
                 adapterClass.notifyDataSetChanged();
             }
         } else {
-            for (int i = 0; i < MassStorageMsg.size(); i++) {
-                markRead(0,null);
+            for (int i = 0; i <= MassStorageMsg.size(); i++) {
+                markRead(0, null);
                 adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
                 Log.d("my", MassStorageMsg.get(i));
+                Log.d("my", "Size of massStorage: "+MassStorageMsg.size());
                 adapterClass.notifyDataSetChanged();
             }
         }
     }
 
-    String markRead(int min,String newMsg) {
-        if(min>-1) {
+    String markRead(int min, String newMsg) {
+        if (min > -1) {
             for (int i = min; i < MassStorageMsg.size(); i++) {
                 if (MassStorageMsg.get(i).contains("new:")) {
                     MassStorageMsg.set(i, MassStorageMsg.get(i).substring(4));
                 }
             }
-        }else {
+        } else {
             int index = newMsg.indexOf("new:");
             return newMsg.substring(index + 4);
         }
