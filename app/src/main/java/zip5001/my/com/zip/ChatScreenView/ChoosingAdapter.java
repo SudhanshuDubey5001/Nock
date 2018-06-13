@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import zip5001.my.com.zip.DatabaseOperations;
+import zip5001.my.com.zip.Fragment.ViewPagerCreation;
 import zip5001.my.com.zip.R;
 import zip5001.my.com.zip.activities.ChooseMate;
 
@@ -28,6 +29,8 @@ public class ChoosingAdapter extends RecyclerView.Adapter<ChoosingViewholder>{
     public void setArray(ArrayList<String> arr,int id){
         listNames = arr;
         this.id=id;
+        ViewPagerCreation creation=new ViewPagerCreation();
+        Log.d("my","Setting array for id= "+creation.getIdOfPager());
         ChoosingAdapter.context=this;
     }
 
@@ -48,25 +51,5 @@ public class ChoosingAdapter extends RecyclerView.Adapter<ChoosingViewholder>{
     @Override
     public int getItemCount() {
         return listNames.size();
-    }
-
-    public void cancel(View view){
-        if(view==null){
-            ChoosingViewholder.LongClickheld=false;
-            for(View v:ChoosingViewholder.viewArray){
-                v.setBackgroundColor(Color.WHITE);
-            }
-
-            DatabaseOperations.deleteUsers.clear();
-            DatabaseOperations.deleteNew.clear();
-            DatabaseOperations.deleteRoom.clear();
-        }else {
-            for(View v:ChoosingViewholder.viewArray){
-                if(v==view) {
-                    Log.d("my","Arey ab to yahan par bhi aa gaye!!");
-                    v.setBackgroundColor(Color.WHITE);
-                }
-            }
-        }
     }
 }

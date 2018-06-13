@@ -29,6 +29,10 @@ public class ViewPagerCreation extends Fragment {
     TabsArrayClass tab = new TabsArrayClass();
     SwipeRefreshLayout swipe;
 
+    public int getIdOfPager() {
+        return id;
+    }
+
     public static ViewPagerCreation createInstance(int id) {
         ViewPagerCreation creation = new ViewPagerCreation();
         Bundle b = new Bundle();
@@ -91,4 +95,6 @@ public class ViewPagerCreation extends Fragment {
                 break;
         }
     }
+
+
 }

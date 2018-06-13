@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
     public static MediaPlayer mpRecieve;
     MediaPlayer mpSend;
     String status;
-    boolean presentInRoomStatus;
     int noOfMessages;
-    DatabaseReference refRoom;
     ChildEventListener childEventListener;
 
     @Override

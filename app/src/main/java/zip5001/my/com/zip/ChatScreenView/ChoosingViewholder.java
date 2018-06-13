@@ -46,9 +46,8 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
                     ChoosingViewholder.this.context.startActivity(in);
                 } else {
                     if (viewArray.contains(view)) {
-                        Log.d("my","unselect mein aa gaye---------!!!!");
-                        ChoosingAdapter adapter=new ChoosingAdapter();
-                        adapter.cancel(view);
+                        view.setBackgroundColor(Color.WHITE);
+                        viewArray.remove(view);
                         if (id == ViewPagerCreation.ROOM) {
                             DatabaseOperations.deleteRoom.remove(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
                         } else if (id == ViewPagerCreation.MESSAGES) {
@@ -56,16 +55,17 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
                         } else {
                             DatabaseOperations.deleteUsers.remove(TabsArrayClass.Users.get(ChoosingViewholder.this.position));
                         }
-                    }
-                    viewArray.add(view);
-                    view.setBackgroundColor(Color.GRAY);
-                    Log.d("my", "click after long click!!!!!!!!!!!!!!!!!!!!");
-                    if (id == ViewPagerCreation.ROOM) {
-                        DatabaseOperations.deleteRoom.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
-                    } else if (id == ViewPagerCreation.MESSAGES) {
-                        DatabaseOperations.deleteNew.add(TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
-                    } else {
-                        DatabaseOperations.deleteUsers.add(TabsArrayClass.Users.get(ChoosingViewholder.this.position));
+                    }else {
+                        viewArray.add(view);
+                        view.setBackgroundColor(Color.GRAY);
+                        Log.d("my", "click after long click!!!!!!!!!!!!!!!!!!!!");
+                        if (id == ViewPagerCreation.ROOM) {
+                            DatabaseOperations.deleteRoom.add(TabsArrayClass.RoomUsers.get(ChoosingViewholder.this.position));
+                        } else if (id == ViewPagerCreation.MESSAGES) {
+                            DatabaseOperations.deleteNew.add(LoginActivity.UserName + " and " + TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
+                        } else {
+                            DatabaseOperations.deleteUsers.add(LoginActivity.UserName + " and " + TabsArrayClass.Users.get(ChoosingViewholder.this.position));
+                        }
                     }
                 }
             }
@@ -89,7 +89,7 @@ public class ChoosingViewholder extends RecyclerView.ViewHolder {
                     DatabaseOperations.deleteNew.add(LoginActivity.UserName + " and " + TabsArrayClass.MessagesUsers.get(ChoosingViewholder.this.position));
                 } else {
                     DatabaseOperations.deleteUsers.clear();
-                    DatabaseOperations.deleteNew.add(LoginActivity.UserName + " and " + TabsArrayClass.Users.get(ChoosingViewholder.this.position));
+                    DatabaseOperations.deleteUsers.add(LoginActivity.UserName + " and " + TabsArrayClass.Users.get(ChoosingViewholder.this.position));
                 }
                 return true;
             }
