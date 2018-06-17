@@ -42,6 +42,7 @@ public class AdapterClass extends RecyclerView.Adapter<ViewholderClassForUser> {
                 key.add(keyArray.get(i));
             }
         }
+        Log.d("my","New size: "+msg.size());
     }
 
     public void passMsgUSER(String key, String msg) {
