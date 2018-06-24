@@ -13,6 +13,7 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import java.util.ArrayList;
 
 import nock.my.com.nock.ChatScreenView.ChoosingAdapter;
+import nock.my.com.nock.activities.ChooseMate;
 import nock.my.com.nock.activities.LoginActivity;
 
 public class TabsArrayClass {
@@ -24,6 +25,7 @@ public class TabsArrayClass {
     private DatabaseReference database;
     private ChoosingAdapter adapter;
     private volatile String friends;
+
 
     public void refreshUsers_B_Array(ChoosingAdapter adapter, int id) {
         this.adapter = adapter;

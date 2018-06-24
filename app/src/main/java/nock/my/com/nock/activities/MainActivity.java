@@ -1,6 +1,7 @@
 package nock.my.com.nock.activities;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +37,7 @@ import nock.my.com.nock.MessageRecieveClass;
 import nock.my.com.nock.R;
 import nock.my.com.nock.SharedPrefs;
 
-public class MainActivity extends AppCompatActivity implements loadMoreMessages {
+public class MainActivity extends AppCompatActivity {
 
     public static final String GETFRIEND = "friend";
     public static final String GETID = "id";
@@ -42,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
     boolean firstTime = true;
     public static boolean NOTI_Enable = false;
 
-    ArrayList<String> MassStorageMsg = new ArrayList<>();
-    ArrayList<String> MassStorageKey = new ArrayList<>();
+//    ArrayList<String> MassStorageMsg = new ArrayList<>();
+//    ArrayList<String> MassStorageKey = new ArrayList<>();
     EditText msgField;
     AdapterClass adapterClass = new AdapterClass(this);
     public static String friendUserName;
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
         setContentView(R.layout.activity_main);
 
         Log.d("my", "MainActivity started!!");
+
+        super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         //notification---->
         MessageRecieveClass.value = false;
@@ -101,11 +106,11 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
                         if (snapshot.getValue().equals(DatabaseOperations.ONLINE)) {
                             status = "ONLINE";
 //                          setActionBar----->
-                            setTitle(friendUserName + " " + status);
+                            setTitle(friendUserName + "\n" + status);
                         } else {
                             status = "OFFLINE";
 //                          setActionBar----->
-                            setTitle(friendUserName + " " + status);
+                            setTitle(friendUserName + "\n" + status);
                         }
                     }
                 }
@@ -123,7 +128,9 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
 
 //      Recycler View------------>
         recyclerView = findViewById(R.id.chatScreen);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager manager= new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterClass);
 
 //      Firebase adding chat column------------>
@@ -156,29 +163,29 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
                 String msg = dataSnapshot.getValue().toString();
                 String key = dataSnapshot.getKey();
 
-                if(noOfMessages!=0) {
-                    if (MassStorageMsg.size() < noOfMessages) {
-                        Log.d("my", dataSnapshot.getValue().toString() + " add ho gaya");
-                        Log.d("my", "MassStorage size: " + MassStorageMsg.size());
-                        MassStorageMsg.add(msg);
-                        MassStorageKey.add(key);
-                    }
+//                if(noOfMessages!=0) {
+//                    if (MassStorageMsg.size() < noOfMessages) {
+//                        Log.d("my", dataSnapshot.getValue().toString() + " add ho gaya");
+//                        Log.d("my", "MassStorage size: " + MassStorageMsg.size());
+//                        MassStorageMsg.add(msg);
+//                        MassStorageKey.add(key);
+//                    }
 
 //              load 60 messages initially----------------------->
-                    if (MassStorageMsg.size() == noOfMessages) {
-                        if (firstTime) {
-                            firstTime = false;
-                            Log.d("my", "Load 60 messages initially");
-                            loadMessages();
-//                  then for new messages----------------------------------->
-                        } else {
-                            Log.d("my", "for new messages");
-                            adapterClass.passMsgUSER(dataSnapshot.getKey(), dataSnapshot.getValue().toString());
-                        }
-                    }
-                }else {
-                    adapterClass.passMsgUSER(dataSnapshot.getKey(), dataSnapshot.getValue().toString());
-                }
+//                    if (MassStorageMsg.size() == noOfMessages) {
+//                        if (firstTime) {
+//                            firstTime = false;
+//                            Log.d("my", "Load 60 messages initially");
+//                            loadMessages();
+////                  then for new messages----------------------------------->
+//                        } else {
+//                            Log.d("my", "for new messages");
+//                            adapterClass.passMsgUSER(dataSnapshot.getKey(), dataSnapshot.getValue().toString());
+//                        }
+//                    }
+//                }else {
+                    adapterClass.passMsgUSER(key, msg);
+//                }
                 adapterClass.notifyDataSetChanged();
 
 
@@ -246,63 +253,63 @@ public class MainActivity extends AppCompatActivity implements loadMoreMessages 
         });
     }
 
-    private void loadMessages() {
-        //first time---->
-        if (MassStorageMsg.size() > 60) {
-            int min = MassStorageMsg.size() - 60;
-            for (int i = min; i < MassStorageMsg.size(); i++) {
-                markRead(min, null);
-                adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
-                Log.d("my", "here..." + MassStorageMsg.get(i));
-                adapterClass.notifyDataSetChanged();
-            }
-        } else {
-            for (int i = 0; i < MassStorageMsg.size(); i++) {
-                markRead(0, null);
-                adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
-                Log.d("my", MassStorageMsg.get(i));
-                Log.d("my", "Size of massStorage: " + MassStorageMsg.size());
-                adapterClass.notifyDataSetChanged();
-            }
-        }
-    }
+//    private void loadMessages() {
+//        //first time---->
+//        if (MassStorageMsg.size() > 60) {
+//            int min = MassStorageMsg.size() - 60;
+//            for (int i = min; i < MassStorageMsg.size(); i++) {
+//                markRead(min, null);
+//                adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
+//                Log.d("my", "here..." + MassStorageMsg.get(i));
+//                adapterClass.notifyDataSetChanged();
+//            }
+//        } else {
+//            for (int i = 0; i < MassStorageMsg.size(); i++) {
+//                markRead(0, null);
+//                adapterClass.passMsgUSER(MassStorageKey.get(i), MassStorageMsg.get(i));
+//                Log.d("my", MassStorageMsg.get(i));
+//                Log.d("my", "Size of massStorage: " + MassStorageMsg.size());
+//                adapterClass.notifyDataSetChanged();
+//            }
+//        }
+//    }
 
-    String markRead(int min, String newMsg) {
-        if (min > -1) {
-            for (int i = min; i < MassStorageMsg.size(); i++) {
-                if (MassStorageMsg.get(i).contains("new:")) {
-                    String convertOld=MassStorageMsg.get(i).substring(4);
-                    MassStorageMsg.set(i, convertOld);
-                    ref.child(children1).child(MassStorageKey.get(i)).setValue(convertOld);
-                }
-            }
-        } else {
-            int index = newMsg.indexOf("new:");
-            return newMsg.substring(index + 4);
-        }
-        return null;
-    }
+//    String markRead(int min, String newMsg) {
+//        if (min > -1) {
+//            for (int i = min; i < MassStorageMsg.size(); i++) {
+//                if (MassStorageMsg.get(i).contains("new:")) {
+//                    String convertOld=MassStorageMsg.get(i).substring(4);
+//                    MassStorageMsg.set(i, convertOld);
+//                    ref.child(children1).child(MassStorageKey.get(i)).setValue(convertOld);
+//                }
+//            }
+//        } else {
+//            int index = newMsg.indexOf("new:");
+//            return newMsg.substring(index + 4);
+//        }
+//        return null;
+//    }
 
-    @Override
-    public void loadMore(int noOfTimes) {
-        ArrayList<String> msg = new ArrayList<>();
-        ArrayList<String> key = new ArrayList<>();
-        int min = MassStorageMsg.size() - (60 * noOfTimes);
-        int max = MassStorageMsg.size() - (60 * (noOfTimes - 1));
-        if (min <= 0) {
-            for (int i = 0; i < max; i++) {
-                msg.add(MassStorageMsg.get(i));
-                key.add(MassStorageKey.get(i));
-            }
-        } else {
-            for (int i = min; i < max; i++) {
-                msg.add(MassStorageMsg.get(i));
-                key.add(MassStorageKey.get(i));
-            }
-        }
-        adapterClass.adjustMsgArray(key, msg);
-//        adapterClass.notifyDataSetChanged();
-    }
+//    @Override
+//    public void loadMore(int noOfTimes) {
+//        ArrayList<String> msg = new ArrayList<>();
+//        ArrayList<String> key = new ArrayList<>();
+//        int min = MassStorageMsg.size() - (60 * noOfTimes);
+//        int max = MassStorageMsg.size() - (60 * (noOfTimes - 1));
+//        if (min <= 0) {
+//            for (int i = 0; i < max; i++) {
+//                msg.add(MassStorageMsg.get(i));
+//                key.add(MassStorageKey.get(i));
+//            }
+//        } else {
+//            for (int i = min; i < max; i++) {
+//                msg.add(MassStorageMsg.get(i));
+//                key.add(MassStorageKey.get(i));
+//            }
+//        }
+//        adapterClass.adjustMsgArray(key, msg);
+////        adapterClass.notifyDataSetChanged();
+//    }
 
     //  Prepare option menu in chat screen---------------------->
     @Override

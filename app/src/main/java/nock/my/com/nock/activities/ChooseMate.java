@@ -1,8 +1,10 @@
 package nock.my.com.nock.activities;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
@@ -12,10 +14,12 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TableLayout;
 
 import nock.my.com.nock.ChatScreenView.ChoosingAdapter;
 import nock.my.com.nock.ChatScreenView.ChoosingViewholder;
 import nock.my.com.nock.DatabaseOperations;
+import nock.my.com.nock.Fragment.InvokePagers;
 import nock.my.com.nock.Fragment.TabsArrayClass;
 import nock.my.com.nock.Fragment.ViewPagerCreation;
 import nock.my.com.nock.Fragment.ViewPagerManager;
@@ -30,6 +34,7 @@ public class ChooseMate extends AppCompatActivity {
     static Menu menu;
     private boolean firstTime = true;
     ViewPager pager;
+    ViewPagerManager manager=new ViewPagerManager(getSupportFragmentManager());
 
     public void goVisible() {
         itemDelete = menu.findItem(R.id.delete);
@@ -45,10 +50,16 @@ public class ChooseMate extends AppCompatActivity {
         itemCancel.setVisible(false);
     }
 
+    public void updateViews() {
+        manager.notifyDataSetChanged();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_mate);
+
+        super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
 //      setTitle------>
         setTitle("Welcome " + LoginActivity.UserName.toUpperCase());
@@ -62,13 +73,20 @@ public class ChooseMate extends AppCompatActivity {
         PagerTabStrip tab = (PagerTabStrip) pagerTitleStrip;
         tab.setTabIndicatorColor(Color.WHITE);
 
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout.addTab(tabLayout.newTab().setText("1").setIcon(R.drawable.myheart_icon));
+//        tabLayout.addTab(tabLayout.newTab().setText("2").setIcon(R.drawable.myheart_icon));
+//        tabLayout.addTab(tabLayout.newTab().setText("3").setIcon(R.mipmap.ic_settings));
+//        tabLayout.addTab(tabLayout.newTab().setText("4").setIcon(R.mipmap.ic_settings));
 
 //      Setting up View Pager--------------->
         pager = findViewById(R.id.viewPager);
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
-        ViewPagerManager manager=new ViewPagerManager(getSupportFragmentManager());
-        manager.notifyDataSetChanged();
         pager.setAdapter(manager);
+
+//      set up for updating the views--->
+//        TabsArrayClass tabs= new TabsArrayClass();
+//        tabs.setUpTheinvoke(this);
 
 //      Start the service for receiving message when app is not open---------->
         MessageRecieveClass.value = true;

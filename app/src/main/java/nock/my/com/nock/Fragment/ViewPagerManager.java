@@ -34,12 +34,12 @@ public class ViewPagerManager extends FragmentPagerAdapter {
         } else {
             return "Room";
         }
-
     }
+
 
     @Override
     public int getItemPosition(Object object) {
-        return super.getItemPosition(object);
+        return POSITION_NONE;
     }
 
     //to get current page number------------------------------------------------>

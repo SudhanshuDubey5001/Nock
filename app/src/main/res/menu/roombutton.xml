@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/AddOrRemove"
-        android:icon="@drawable/heart"
+        android:icon="@drawable/myheart_icon"
         android:title="Heart"
         app:showAsAction="always"/>
 </menu>

@@ -1,6 +1,7 @@
 package nock.my.com.nock.Fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 
 import nock.my.com.nock.ChatScreenView.ChoosingAdapter;
 import nock.my.com.nock.R;
+import nock.my.com.nock.activities.ChooseMate;
+
+import static android.support.v4.view.PagerAdapter.POSITION_NONE;
 
 public class ViewPagerCreation extends Fragment {
 
@@ -26,6 +30,7 @@ public class ViewPagerCreation extends Fragment {
     ChoosingAdapter adapter = new ChoosingAdapter();
     TabsArrayClass tab = new TabsArrayClass();
     SwipeRefreshLayout swipe;
+    int currentID;
 
     public int getIdOfPager() {
         return id;
@@ -49,22 +54,6 @@ public class ViewPagerCreation extends Fragment {
         } else {
             throw new RuntimeException("(Pass the id man");
         }
-
-//        swipe = this.getActivity().findViewById(R.id.swiperefresh);
-//        tab.initializeHUD(this.getActivity());
-
-//        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                if(id==USERS_B){
-//                    tab.refreshUsers_B_Array(adapter,id);
-//                }else if(id==MESSAGES){
-//                    tab.refreshMessageArray(adapter,id);
-//                }else {
-//                    tab.refreshRoomArray(adapter,id);
-//                }
-//            }
-//        });
     }
 
     @Nullable
@@ -81,6 +70,9 @@ public class ViewPagerCreation extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Log.d("my", "Run ho gaya");
+
         switch (id) {
             case USERS_B:
                 tab.refreshUsers_B_Array(adapter, id);
@@ -96,6 +88,4 @@ public class ViewPagerCreation extends Fragment {
                 break;
         }
     }
-
-
 }

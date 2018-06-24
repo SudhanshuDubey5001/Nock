@@ -22,23 +22,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="15sp"
         android:layout_alignParentBottom="true">
 
         <EditText
+            android:layout_marginLeft="10sp"
             android:id="@+id/chatMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="9" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/send"
-            android:background="#F52727"
-            android:textColor="#ffffff"
+            android:background="@drawable/circle"
+            android:layout_margin="10sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text=">" />
+            android:textSize="25sp"
+            android:text=">"
+            android:textColor="#ffffff"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 </RelativeLayout>
